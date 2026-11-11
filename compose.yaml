@@ -1,0 +1,38 @@
+name: clickwar
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: clicker
+      POSTGRES_USER: clicker
+      POSTGRES_PASSWORD: clicker
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    # PostgreSQL 18 usa /var/lib/postgresql como volumen (no /var/lib/postgresql/data).
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clicker -d clicker"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://clicker:clicker@db:5432/clicker
+      BASE_URL: ${BASE_URL:-http://localhost:8000}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      SECRET_KEY: ${SECRET_KEY:-dev-only-secret-change-me}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      DEV_LOGIN: ${DEV_LOGIN:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

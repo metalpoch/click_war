@@ -8,8 +8,9 @@ Un clicker competitivo: entras con GitHub, haces click y peleas por el top de un
 
 ## Stack
 
+- **Runtime:** Python 3.15
 - **Backend:** FastAPI + Uvicorn
-- **Base de datos:** PostgreSQL 16 + SQLAlchemy 2 + psycopg 3
+- **Base de datos:** PostgreSQL 18 + SQLAlchemy 2 + psycopg 3
 - **Auth:** GitHub OAuth implementado a mano con `httpx` + cookie de sesión firmada con `itsdangerous`
 - **Frontend:** HTML, CSS y JavaScript vanilla, sin build ni frameworks
 - **Deploy:** Docker + Docker Compose
@@ -25,6 +26,7 @@ Un clicker competitivo: entras con GitHub, haces click y peleas por el top de un
 │   ├── config.py     # variables de entorno
 │   └── static/       # frontend (HTML/CSS/JS/fuentes)
 ├── tests/            # tests de API con PostgreSQL real
+├── docs/             # capturas + guía de almacenamiento
 ├── Dockerfile
 ├── compose.yaml
 ├── requirements.txt
@@ -39,6 +41,7 @@ La idea es que el proyecto se lea en una sentada:
 - El ranking se resuelve con una window function (`RANK() OVER (ORDER BY score DESC)`), sin tablas de posiciones.
 - Las tablas se crean al arrancar (`create_all`). Para este tamaño no hay Alembic.
 - El frontend es estático: FastAPI sirve `index.html` y `/static`.
+- Los puntos viven en `users.score` y cada click es un incremento atómico; no se guarda historial de clicks. Ver [cómo se almacenan los puntos](docs/almacenamiento-de-puntos.md).
 
 Flujo de login:
 
@@ -60,6 +63,8 @@ docker compose up --build
 Abre <http://localhost:8000>.
 
 Si el puerto `5432` ya está ocupado, añade `DB_PORT=5433` al `.env` y ajusta `DATABASE_URL` si corres la app fuera de Docker.
+
+> PostgreSQL 18 cambió el volumen oficial a `/var/lib/postgresql` (antes era `/var/lib/postgresql/data`). Si vienes de PostgreSQL 17 o anterior con datos en el volumen anterior, no lo reutilices directamente: migra con `pg_dump`/`pg_restore` o empieza con un volumen limpio. `docker compose down -v` borra los datos.
 
 Sin credenciales de GitHub puedes probar en local con el login de desarrollo:
 
@@ -86,7 +91,7 @@ Si cambias el dominio, actualiza `BASE_URL` y la callback URL de la OAuth App.
 
 ## Correr sin Docker
 
-Con el PostgreSQL de Compose:
+Con Python 3.15 y el PostgreSQL de Compose:
 
 ```bash
 docker compose up -d db
@@ -190,6 +195,30 @@ TEST_DATABASE_URL=postgresql+psycopg://clicker:clicker@localhost:5432/clicker_te
 Cubren: endpoints públicos sin auth, login de desarrollo, clicks, ranking con empates, paginación, jugador inexistente, cookie falsificada, validación de límites y el flujo completo de OAuth con un GitHub simulado (incluyendo actualización de perfil sin duplicar cuentas).
 
 > Los tests hacen `TRUNCATE` de `users`. No apuntes `TEST_DATABASE_URL` a una base con datos reales.
+
+## CI/CD
+
+El workflow [.github/workflows/docker.yml](.github/workflows/docker.yml) corre en cada `push` (cualquier rama o tag), en pull requests y manualmente con `workflow_dispatch`.
+
+1. **Tests:** levanta PostgreSQL 18 como service, instala `requirements-dev.txt` y ejecuta `pytest -q` con Python 3.15.
+2. **Imagen Docker:** Buildx construye la imagen desde el `Dockerfile`. Si el evento es un push o una ejecución manual, la publica en **GitHub Container Registry** (`ghcr.io/<owner>/<repo>`) usando el `GITHUB_TOKEN`. En pull requests solo se construye. No hay que configurar ningún secret.
+
+Tags que genera:
+
+| Evento | Tags |
+| --- | --- |
+| Push a una rama | nombre de la rama, `sha-<commit>` |
+| Push a la rama por defecto | además `latest` |
+| Push de un tag | nombre del tag, `sha-<commit>` y, si es semver, `1.2.3` / `1.2` |
+| Pull request | `pr-<número>` (solo se construye, no se publica) |
+
+```bash
+docker pull ghcr.io/TU_USUARIO/TU_REPO:latest
+```
+
+La primera publicación crea el paquete como privado. Si quieres descargarlo sin autenticarte, cámbialo a público en la configuración de Packages del repositorio; si lo dejas privado, usa `docker login ghcr.io`.
+
+Los tests tienen que pasar antes de construir o publicar la imagen. Si tu organización restringe el `GITHUB_TOKEN`, habilita permisos de escritura para paquetes en **Settings → Actions → General → Workflow permissions**; el workflow ya declara `packages: write`.
 
 ## Decisiones y límites
 
