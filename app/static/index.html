@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CLICK//WAR — un click, un punto</title>
+    <meta
+      name="description"
+      content="El clicker competitivo. Entra con GitHub, haz click y pelea por el top del ranking. Sin vidas. Sin excusas."
+    />
+    <meta name="theme-color" content="#0d0d0d" />
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/static/fonts/archivo-black.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#clicker">Saltar al clicker</a>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="CLICK WAR, inicio">
+        CLICK<span class="brand-slash">//</span>WAR<span class="brand-dot" aria-hidden="true"></span>
+      </a>
+
+      <p class="topbar-claim" aria-hidden="true">UN CLICK = UN PUNTO · EL RESTO ES RUIDO</p>
+
+      <div class="topbar-actions">
+        <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+            <path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor" />
+            <path class="sound-wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          <span class="sound-label">SONIDO</span>
+        </button>
+        <a class="nav-link" href="#tabla">LA TABLA</a>
+        <div id="auth-slot" class="auth-slot" aria-live="polite">
+          <button class="btn btn-sm" type="button" data-open-login>ENTRAR ↗</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>UN CLICK = UN PUNTO</span><span class="marquee-star">✱</span>
+        <span>EL QUE PARPADEA PIERDE</span><span class="marquee-star">✱</span>
+        <span>GITHUB O NADA</span><span class="marquee-star">✱</span>
+        <span>LOS NÚMEROS NO MIENTEN</span><span class="marquee-star">✱</span>
+        <span>UN CLICK = UN PUNTO</span><span class="marquee-star">✱</span>
+        <span>EL QUE PARPADEA PIERDE</span><span class="marquee-star">✱</span>
+        <span>GITHUB O NADA</span><span class="marquee-star">✱</span>
+        <span>LOS NÚMEROS NO MIENTEN</span><span class="marquee-star">✱</span>
+      </div>
+    </div>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="blink-dot" aria-hidden="true"></span>
+            TEMPORADA 01 — ABIERTA · SIN PREMIO, SOLO ORGULLO
+          </p>
+
+          <h1 class="hero-title">
+            <span>UN CLICK.</span>
+            <span>UN PUNTO.</span>
+            <span class="hero-title-mark">CERO PIEDAD.</span>
+          </h1>
+
+          <p class="lede">
+            El clicker competitivo. Entra con GitHub, dale hasta que duela y mira quién
+            aguanta más. Sin vidas. Sin excusas. Sin premio.
+          </p>
+
+          <div class="hero-cta">
+            <button class="btn btn-lg" type="button" data-open-login>
+              <span class="btn-label">ENTRAR CON GITHUB</span>
+              <span class="btn-arrow" aria-hidden="true">↗</span>
+            </button>
+            <a class="text-link" href="#tabla">VER EL RANKING ↓</a>
+          </div>
+
+          <ol class="steps" aria-label="Cómo se juega">
+            <li><span>01</span> Entra con GitHub</li>
+            <li><span>02</span> Haz click como si importara</li>
+            <li><span>03</span> Sube en la tabla</li>
+          </ol>
+        </div>
+
+        <div class="arena">
+          <div class="score-panel">
+            <div class="score-panel-head">
+              <span class="panel-label">TU PUNTAJE</span>
+              <span id="rank-badge" class="rank-badge" title="Tu posición global">#—</span>
+            </div>
+            <div id="score-number" class="score-number" data-size="lg">0000</div>
+            <div class="score-panel-foot">
+              <span id="user-handle" class="user-handle">@INVITADO</span>
+              <span id="combo" class="combo">COMBO ×1</span>
+            </div>
+          </div>
+
+          <div class="click-zone">
+            <div class="click-shadow" aria-hidden="true"></div>
+            <button
+              id="clicker"
+              class="clicker is-locked"
+              type="button"
+              aria-disabled="true"
+              aria-describedby="click-hint"
+            >
+              <span class="clicker-rings" aria-hidden="true"></span>
+              <span class="clicker-lock" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <rect x="5" y="10" width="14" height="10" rx="0" fill="none" stroke="currentColor" stroke-width="2.5" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.5" />
+                </svg>
+                LOGIN
+              </span>
+              <span class="clicker-label">CLICK</span>
+              <span class="clicker-sub">+1 PUNTO</span>
+              <span class="clicker-flash" aria-hidden="true"></span>
+            </button>
+            <div id="floaters" class="floaters" aria-hidden="true"></div>
+            <div class="sticker" aria-hidden="true">
+              <span>NO TE</span>
+              <span>RINDAS</span>
+              <span class="sticker-star">✱</span>
+            </div>
+          </div>
+
+          <p id="click-hint" class="click-hint">ENTRA CON GITHUB PARA QUE TUS CLICKS CUENTEN</p>
+        </div>
+      </section>
+
+      <section class="stats-strip" aria-label="Estadísticas globales">
+        <div class="stat">
+          <span class="stat-label">JUGADORES</span>
+          <span id="stat-players" class="stat-value">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">CLICKS TOTALES</span>
+          <span id="stat-clicks" class="stat-value">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">TU POSICIÓN</span>
+          <span id="stat-rank" class="stat-value">—</span>
+        </div>
+        <div class="stat stat-api">
+          <span class="stat-label">API PÚBLICA</span>
+          <a class="stat-link" href="/api/docs" target="_blank" rel="noopener">EXPLORAR ↗</a>
+        </div>
+      </section>
+
+      <section id="tabla" class="leaderboard">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">RANKING GLOBAL</p>
+            <h2>LA TABLA<span class="red-dot">.</span></h2>
+          </div>
+          <div class="section-meta">
+            <span class="live" id="live-indicator"><span class="live-dot" aria-hidden="true"></span> EN VIVO</span>
+            <p>TOP 10 · SE ACTUALIZA SOLO.<br />LOS NÚMEROS NO MIENTEN.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="score-table">
+            <thead>
+              <tr>
+                <th scope="col">POS</th>
+                <th scope="col">JUGADOR</th>
+                <th scope="col">PUNTOS</th>
+                <th scope="col" class="col-gap">DISTANCIA</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <tr class="skeleton-row"><td>#</td><td><span class="skeleton"></span></td><td><span class="skeleton"></span></td><td class="col-gap"><span class="skeleton"></span></td></tr>
+              <tr class="skeleton-row"><td>#</td><td><span class="skeleton"></span></td><td><span class="skeleton"></span></td><td class="col-gap"><span class="skeleton"></span></td></tr>
+              <tr class="skeleton-row"><td>#</td><td><span class="skeleton"></span></td><td><span class="skeleton"></span></td><td class="col-gap"><span class="skeleton"></span></td></tr>
+            </tbody>
+          </table>
+
+          <div id="leaderboard-empty" class="empty-state" hidden>
+            <p class="empty-kicker">NADIE AÚN.</p>
+            <p>La tabla está vacía. Qué vergüenza. <button class="inline-link" type="button" data-open-login>Entra y haz el primer click.</button></p>
+          </div>
+        </div>
+
+        <div class="board-foot">
+          <span id="board-updated">ESPERANDO DATOS…</span>
+          <a href="/api/leaderboard" target="_blank" rel="noopener">GET /api/leaderboard ↗</a>
+        </div>
+      </section>
+
+      <section class="api-section">
+        <div class="api-copy">
+          <p class="eyebrow eyebrow-light">LA API TAMBIÉN JUEGA</p>
+          <h2>PÚBLICA.<br />SIN TOKEN.</h2>
+          <p>
+            El ranking y los puntajes se consultan sin autenticación. Haz tu propio
+            dashboard, un bot de chismes o lo que sea. Solo hay dos endpoints y hacen lo
+            que dicen.
+          </p>
+          <a class="btn btn-acid" href="/api/docs" target="_blank" rel="noopener">VER DOCS ↗</a>
+        </div>
+        <div class="api-endpoints">
+          <article class="endpoint">
+            <div class="endpoint-head"><span class="method">GET</span><code>/api/leaderboard</code></div>
+            <p>Top global. Acepta <code>limit</code> y <code>offset</code>.</p>
+          </article>
+          <article class="endpoint">
+            <div class="endpoint-head"><span class="method">GET</span><code>/api/players/{username}</code></div>
+            <p>Puntaje y posición de un jugador concreto.</p>
+          </article>
+          <article class="endpoint endpoint-curl">
+            <pre><span class="prompt">$</span> curl -s /api/leaderboard?limit=3</pre>
+            <p>Sin cookies. Sin headers raros. Sin drama.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-brand">CLICK<span>//</span>WAR</div>
+      <p>HECHO CON FASTAPI, POSTGRESQL Y MANOS FRÍAS.</p>
+      <p class="footer-small">© <span id="year">2026</span> · UNA COOKIE DE SESIÓN Y NADA MÁS.</p>
+    </footer>
+
+    <div id="login-modal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-login></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="login-title">
+        <div class="modal-top">
+          <span class="modal-index">ACCESO / 01</span>
+          <button class="modal-close" type="button" aria-label="Cerrar" data-close-login>✕</button>
+        </div>
+        <h2 id="login-title">IDENTIFÍCATE<span class="red-dot">.</span></h2>
+        <p class="modal-copy">
+          Necesitamos saber a quién culpar. GitHub nos da tu nombre y tu avatar. Nada más.
+        </p>
+
+        <a id="github-login" class="btn btn-github" href="/auth/github">
+          <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.6 7.6 0 0 1 8 3.84c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+          </svg>
+          CONTINUAR CON GITHUB
+        </a>
+        <p id="oauth-note" class="form-note" hidden>
+          OAuth no configurado. Define <code>GITHUB_CLIENT_ID</code> y
+          <code>GITHUB_CLIENT_SECRET</code> en tu <code>.env</code>.
+        </p>
+
+        <div id="dev-login-block" class="dev-block" hidden>
+          <div class="divider"><span>O MODO DESARROLLO</span></div>
+          <form id="dev-form" class="dev-form">
+            <label class="sr-only" for="dev-name">Nombre de jugador</label>
+            <input id="dev-name" name="name" type="text" placeholder="tu-nombre" maxlength="30" pattern="[A-Za-z0-9_\-]+" autocomplete="off" required />
+            <button class="btn btn-ghost" type="submit">ENTRAR</button>
+          </form>
+          <p class="form-note">Solo para probar en local. En producción esto no existe.</p>
+        </div>
+
+        <p class="modal-fine">SIN EMAILS. SIN PUBLICACIONES. SOLO LECTURA DE TU PERFIL PÚBLICO.</p>
+      </div>
+    </div>
+
+    <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+  </body>
+</html>

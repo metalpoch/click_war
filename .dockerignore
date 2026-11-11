@@ -1,0 +1,13 @@
+.venv
+.git
+.gitignore
+.env
+.env.example
+.tmp
+__pycache__
+*.pyc
+.pytest_cache
+tests
+docs
+README.md
+compose.yaml
